@@ -1,38 +1,35 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@300;400&family=Raleway:wght@300;400&family=Teko:wght@400;500&display=swap');
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
-.App-header {
-  background-color: #282c34;
+.auth
+{
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* display: flex; */
+  background-image: url('./bg.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
-.App-link {
-  color: #61dafb;
-}
+::-webkit-scrollbar { 
+  width: 10px; 
+} 
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Track */
+::-webkit-scrollbar-track { 
+  background: #f1f1f1; 
+} 
+
+/* Handle */
+::-webkit-scrollbar-thumb { 
+  background: #888; 
+  border-radius: 5px; 
+} 
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover { 
+  background: #555; 
 }
