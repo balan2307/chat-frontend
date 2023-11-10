@@ -17,18 +17,19 @@ function AllChats() {
     let allchats = await response.json();
     allchats = allchats.filter((chat) => chat._id != user.user_detail.id);
 
-    console.log("all chats ",allchats)
+  
     setChats(allchats);
   };
   useEffect(() => {
     fetchChats();
   }, []);
 
-  function showChat(id,name) {
+  function showChat(id,receiver_name,receiverId) {
 
 
-    console.log("show chat ",id)
-    dispatch(chatActions.setCurrentChat({id,name}));
+   
+   
+    dispatch(chatActions.setCurrentChat({id,receiver_name,receiverId}));
     
   }
 
@@ -41,8 +42,9 @@ function AllChats() {
       <div className="flex flex-col gap-4 ">
         {chats?.length > 0 &&
           chats.map((chat) => {
+           
             return (
-              <div onClick={() => showChat(chat.chatId,chat.user.name)} key={chat.chatId}>
+              <div onClick={() => showChat(chat.chatId,chat.user.name,chat.user._id)} key={chat.chatId}>
                 <ChatHeader
                   name={chat.user.name}
                 ></ChatHeader>

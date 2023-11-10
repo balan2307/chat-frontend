@@ -4,13 +4,15 @@ const chat = createSlice({
   name: "chat",
   initialState: {
     chatId: null,
-    chatName: null,
+    receiverName: null,
+    receiverId:null
   },
   reducers: {
     setCurrentChat(state, action) {
-      console.log("chat store ", action.payload);
+    
       state.chatId = action.payload.id;
-      state.chatName = action.payload.name;
+      state.receiverName = action.payload.receiver_name;
+      state.receiverId=action.payload.receiverId
     },
   },
 });

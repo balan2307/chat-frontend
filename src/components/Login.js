@@ -18,7 +18,7 @@ function Login() {
   }
 
   async function handleLogin() {
-    console.log("in");
+  
     const data = {
       email,
       password,
@@ -33,7 +33,7 @@ function Login() {
       });
 
       let res = await response.json();
-      console.log("frontend ", res);
+      
       // localStorage.setItem("user_detail",JSON.stringify(res.data))
       dispatch(appActions.setuserDetail(res.data))
 

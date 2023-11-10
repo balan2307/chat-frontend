@@ -11,7 +11,7 @@ function Navbar() {
 
 
   function toggleSideBar() {
-    console.log("clicked");
+   
     dispatch(appActions.toggleSidebar())
   }
   return (

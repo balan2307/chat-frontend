@@ -20,7 +20,7 @@ function Signup() {
       password,
     };
 
-    console.log("data ", data);
+   
     try {
 
       let response = await fetch("http://localhost:3000/auth/register", {
@@ -33,8 +33,7 @@ function Signup() {
 
       let res=await response.json()
       localStorage.setItem('access_token',res.data.token)
-      console.log("frontend ",res.data.token);
-
+     
       navigate("/user/login");
     } catch (err) {
       console.log("error ", err);
@@ -43,7 +42,7 @@ function Signup() {
 
   async function handleProfile(pic) {
     setPic(pic);
-    console.log("pic ", pic);
+   
 
     if (pic.type == "image/jpeg" || pic.type == "image/png") {
       const data = new FormData();
@@ -60,7 +59,7 @@ function Signup() {
           }
         );
         const result = await res.json();
-        console.log("result ", result);
+     
       } catch (e) {
         console.log("error ", e);
       }

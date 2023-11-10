@@ -12,7 +12,7 @@ function SideBar() {
 
   const userId=useSelector((state)=>state.app.user_detail.id)
 
-  console.log("check user ",userId)
+  
   
 
   const showSidebar = useSelector((store) => store.app.showSidebar);
@@ -27,7 +27,7 @@ function SideBar() {
     const users=await data.json();
     setUsers(users)
 
-    console.log("useres ",users)
+
 
   }
   useEffect(()=>{
@@ -46,13 +46,13 @@ function SideBar() {
     }
   },[user])
 
-  function setChat(id,name)
+  function setChat(id,receiver_name,receiverId)
   {
-    console.log("set chat ",id)
    
-    dispatch(chatActions.setCurrentChat({id,name}));
+   
+    dispatch(chatActions.setCurrentChat({id,receiver_name,receiverId}));
   }
-  console.log("sidebar ", showSidebar);
+ 
 
 
   return (
@@ -85,7 +85,7 @@ function SideBar() {
         {
             users.map((userinfo)=>   <ChatHeader 
             name={userinfo.user.name} key={userinfo.user._id} 
-            onClick={()=>setChat(userinfo.chatId,userinfo.user.name)}></ChatHeader>)
+            onClick={()=>setChat(userinfo.chatId,userinfo.user.name,userinfo.user._id)}></ChatHeader>)
         }
           
         </div>
