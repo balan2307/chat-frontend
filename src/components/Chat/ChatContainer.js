@@ -8,8 +8,13 @@ import AllChats from "./AllChats";
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { io } from "socket.io-client";
 
 function ChatContainer() {
+
+  console.log("chat container")
+  const socket=io.connect('http://localhost:3000')
+
   const user = useSelector((state) => state.app);
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
@@ -54,13 +59,17 @@ function ChatContainer() {
       }
 
     })
+
+    setMessage(""); 
+ 
   }
 
   return (
     <div className="flex h-[100vh]">
       <AllChats showUserChats={showUserChats}></AllChats>
 
-      <div className="w-[80%]  border border-t-0 p-4">
+      {chat.receiverName!=null ? (
+        <div className="w-[80%]  border border-t-0 p-4">
         <ChatHeader name={chat.receiverName}></ChatHeader>
         <hr></hr>
 
@@ -76,10 +85,10 @@ function ChatContainer() {
                   <Chat
                     message={chat.content}
                     key={chat._id}
-                    style="ml-auto bg-[#a8ccd8]"
+                    style="ml-auto bg-[#3654ff] text-white"
                   ></Chat>
                 ) : (
-                  <Chat message={chat.content} key={chat._id} style=""></Chat>
+                  <Chat message={chat.content} key={chat._id} style="bg-[antiquewhite]"></Chat>
                 );
               })
             ) : (
@@ -100,6 +109,12 @@ function ChatContainer() {
           </div>
         </div>
       </div>
+      ) : (
+       <div className="w-[100%] h-[70%] flex justify-center items-center">
+         <h1 className="font-semibold text-2xl">Start a conversation</h1>
+        </div>
+
+      )}
     </div>
   );
 }

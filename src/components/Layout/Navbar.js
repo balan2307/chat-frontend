@@ -15,12 +15,14 @@ function Navbar() {
     dispatch(appActions.toggleSidebar())
   }
   return (
-    <div className="border h-12 p-2">
-      <div>
+    <div className="border h-12 p-2 bg-[#5a5a5a] text-white">
+      <div className="flex gap-4 w-[20%] p-1 cursor-pointer" onClick={toggleSideBar}>
         <FontAwesomeIcon
           icon={faSearch}
-          onClick={toggleSideBar}
+         
+          className="mt-1"
         ></FontAwesomeIcon>
+        <p>Search users</p>
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ function SideBar() {
   async function getUsers(user){
 
     if(user=="") return
+    console.log("User ",user)
     const data=await fetch(`http://localhost:3000/auth/searchusers?search=${user}&userId=${userId}`);
     const users=await data.json();
     setUsers(users)
@@ -30,9 +31,14 @@ function SideBar() {
 
 
   }
+
+
   useEffect(()=>{
 
 
+    if(user=="") {
+      setUsers([])
+    }
     let timer=setTimeout(()=>{
         
         getUsers(user)
@@ -49,6 +55,7 @@ function SideBar() {
   function setChat(id,receiver_name,receiverId)
   {
    
+    console.log("check sidebar chat ",id,receiver_name,receiverId)
    
     dispatch(chatActions.setCurrentChat({id,receiver_name,receiverId}));
   }

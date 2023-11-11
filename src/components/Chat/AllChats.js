@@ -27,7 +27,7 @@ function AllChats() {
   function showChat(id,receiver_name,receiverId) {
 
 
-   
+   console.log("check chat ",id,receiverId,receiver_name)
    
     dispatch(chatActions.setCurrentChat({id,receiver_name,receiverId}));
     
@@ -37,7 +37,7 @@ function AllChats() {
   return (
     <div className="w-[20%] border border-t-0 py-4 px-6 flex flex-col gap-4">
       <div>
-        <p className="text-3xl font-semibold ">{user.user_detail.name}</p>
+        <p className="text-2xl font-semibold ">{user.user_detail.name}</p>
       </div>
       <div className="flex flex-col gap-4 ">
         {chats?.length > 0 &&
