@@ -5,14 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { chatActions } from "../../store/Slices/chatSlice";
 import { useRef } from "react";
 
-
-
 function AllChats({ activeUsers }) {
   let [chats, setChats] = useState([]);
   const user = useSelector((state) => state.app);
   const chatContainerRef = useRef(null);
 
-  console.log("active users ",activeUsers)
+  console.log("active users ", activeUsers);
 
   const dispatch = useDispatch();
 
@@ -21,6 +19,8 @@ function AllChats({ activeUsers }) {
       `http://localhost:3000/chats/${user.user_detail.id}`
     );
     let allchats = await response.json();
+
+    console.log("allchats ", allchats);
     // allchats = allchats.filter((chat) => chat._id != user.user_detail.id);
 
     let newChats = allchats.map((chat) => {
@@ -42,8 +42,24 @@ function AllChats({ activeUsers }) {
     fetchChats();
   }, [activeUsers]);
 
-  function showChat(id, receiver_name, receiverId) {
-    dispatch(chatActions.setCurrentChat({ id, receiver_name, receiverId }));
+  function showChat(chat) {
+    if (chat.isGroupChat) {
+      dispatch(
+        chatActions.setCurrentChat({
+          id: chat.chatId,
+          receiver_name: chat.chatName,
+          receiverId: chat.user,
+        })
+      );
+    } else {
+      dispatch(
+        chatActions.setCurrentChat({
+          id: chat.chatId,
+          receiver_name: chat.user.name,
+          receiverId: chat.user._id,
+        })
+      );
+    }
   }
 
   return (
@@ -57,11 +73,12 @@ function AllChats({ activeUsers }) {
             return (
               <div key={chat.chatId}>
                 <ChatHeader
-                  name={chat.user.name}
+                  name={chat.isGroupChat ? chat.chatName : chat.user.name}
                   latestMessage={chat?.latestMessage?.content}
                   status={chat.status}
                   onClick={() =>
-                    showChat(chat.chatId, chat.user.name, chat.user._id)
+                    // chat.chatId,chat.chatName ? chat.chatName : chat.user.name, chat.user._id,
+                    showChat(chat)
                   }
                 ></ChatHeader>
               </div>
@@ -72,5 +89,4 @@ function AllChats({ activeUsers }) {
   );
 }
 
-
-export default AllChats
+export default AllChats;

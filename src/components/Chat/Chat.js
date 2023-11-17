@@ -1,11 +1,16 @@
 import React from "react";
 
-function Chat({ message, style }) {
+function Chat({ message, style ,color,sender}) {
+
+
   return (
-    <div>
-      <p className={`max-w-[40%] p-3 rounded-lg  ${style}`}>
+    <div className={` ${style}`}>
+      <p className={`w-fit p-4 rounded-lg flex flex-col  ${color} `}>
         {message}
+        
       </p>
+      <p className="px-1 font-bold text-sm">{sender}</p>
+     
     </div>
   );
 }

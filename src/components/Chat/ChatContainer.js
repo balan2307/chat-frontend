@@ -12,8 +12,9 @@ import { io } from "socket.io-client";
 import { useCallback } from "react";
 import { useRef } from "react";
 
+
 function ChatContainer() {
-  // console.log("chat container");
+  console.log("chat container");
 
   const user = useSelector((state) => state.app);
   const [chats, setChats] = useState([]);
@@ -21,39 +22,52 @@ function ChatContainer() {
   const chat = useSelector((store) => store.chat);
   const [socket, setSocket] = useState(null);
   const chatContainerRef = useRef(null);
-  const [activeUsers,setActiveUsers]=useState([])
+  const [activeUsers, setActiveUsers] = useState([]);
 
   useEffect(() => {
-    
     scrollToBottom();
-  }, [chats]); 
+  }, [chats]);
 
   const scrollToBottom = () => {
-   
     const container = chatContainerRef.current;
 
-    
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
   };
 
-
   useEffect(() => {
     setSocket(io.connect("http://localhost:3000"));
   }, []);
 
+  useEffect(() => {
+    // console.log("receivers ",chat.receiverId)
+
+    const receivers = chat.receiverId;
+    if (receivers != null && receivers.length >= 2) {
+      socket.emit("joinroom", { room: chat.chatId, user: user.user_detail.id });
+    }
+  }, [chat.chatId]);
+
   const handleMessage = useCallback(
     (message) => {
-      // console.log("receive message ", message);
-      // console.log("check ", message.sender._id, user.user_detail.id, chat);
+      console.log("handle message ", chat.chatId);
 
       if (
-        message.sender._id == user.user_detail.id ||
-        message.sender._id == chat.receiverId
+        message.chatId == "new" &&
+        (message.sender._id == user.user_detail.id ||
+          message.sender._id == chat.receiverId)
       ) {
+        console.log("show chat if", message.chatId);
         setChats((prevChats) => [...prevChats, message]);
+        return;
+      } else if (message.chatId == chat.chatId) {
+        console.log("show chat else ", message.chatId, chat.chatId);
+        setChats((prevChats) => [...prevChats, message]);
+        return;
       }
+
+      console.log("hide chat ", message);
     },
     [chat, user.user_detail.id]
   );
@@ -63,13 +77,16 @@ function ChatContainer() {
 
     socket?.on("getUsers", (users) => {
       // console.log("Users ", users);
-      setActiveUsers(users)
+      setActiveUsers(users);
     });
+
+    socket?.on("receivegroupChat", handleMessage);
 
     socket?.on("getMessage", handleMessage);
     return () => {
       // console.log("off")
       socket?.off("getMessage", handleMessage);
+      socket?.off("receivegroupChat", handleMessage);
     };
   }, [socket, handleMessage]);
 
@@ -84,9 +101,10 @@ function ChatContainer() {
 
     const data = await response.json();
 
+    // console.log("chats ",data)
+
     setChats(data);
   }
-
 
   async function sendMessage() {
     const Newmessage = {
@@ -94,9 +112,12 @@ function ChatContainer() {
       chat: chat.chatId != "new" ? chat.chatId : null,
       content: message,
       receiver: chat.receiverId,
+      chatId: chat.chatId,
+      isGroupChat: typeof chat.receiverId == "object" ? true : false,
+      senderName: user.user_detail.name,
     };
 
-    socket?.emit("sendMessage", Newmessage);
+    socket?.emit("sendMessage", { message: Newmessage });
 
     const resp = await fetch(`http://localhost:3000/message/`, {
       method: "POST",
@@ -111,16 +132,16 @@ function ChatContainer() {
 
   return (
     <div className="flex h-[100vh]">
-      <AllChats  activeUsers={activeUsers}></AllChats>
+      <AllChats activeUsers={activeUsers}></AllChats>
 
-      {chat.receiverName != null ? (
-        <div className="w-[80%]  border border-t-0 p-4">
+      {chat.chatId != null ? (
+        <div className="w-[50%]  border border-t-0 p-4">
           <ChatHeader name={chat.receiverName}></ChatHeader>
           <hr></hr>
 
           <div className="h-[90%]">
             <div
-            ref={chatContainerRef}
+              ref={chatContainerRef}
               className="p-2 flex flex-col gap-2  h-[80%] 
         overflow-y-scroll border-b-2 mb-4
         "
@@ -131,13 +152,20 @@ function ChatContainer() {
                     <Chat
                       message={chat.content}
                       key={chat._id}
-                      style="ml-auto bg-[#3654ff] text-white"
+                      sender={
+                        chat.sender.name ? chat.sender.name : chat.senderName
+                      }
+                      color=" bg-[#3654ff] text-white"
+                      style="ml-auto"
                     ></Chat>
                   ) : (
                     <Chat
                       message={chat.content}
+                      sender={
+                        chat.sender.name ? chat.sender.name : chat.senderName
+                      }
                       key={chat._id}
-                      style="bg-[antiquewhite]"
+                      color="bg-[antiquewhite]"
                     ></Chat>
                   );
                 })
