@@ -5,8 +5,8 @@ const appSlice=createSlice({
     name:"app",
     initialState:{
 
-        user_detail:localStorage.getItem('user_detail') ?
-        JSON.parse(localStorage.getItem('user_detail')) : null,
+        user_detail:localStorage.getItem('user_detail')==undefined ? null
+        :  JSON.parse(localStorage.getItem('user_detail')),
         showSidebar:false
 
     },

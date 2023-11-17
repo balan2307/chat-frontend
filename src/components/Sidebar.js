@@ -10,7 +10,7 @@ import { chatActions } from "../store/Slices/chatSlice";
 function SideBar() {
 
 
-  const userId=useSelector((state)=>state.app.user_detail.id)
+  const userId=useSelector((state)=>state.app?.user_detail?.id)
 
   
   

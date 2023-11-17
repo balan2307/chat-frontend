@@ -5,7 +5,8 @@ const chat = createSlice({
   initialState: {
     chatId: null,
     receiverName: null,
-    receiverId:null
+    receiverId:null,
+    activeUsers:[]
   },
   reducers: {
     setCurrentChat(state, action) {
@@ -14,6 +15,9 @@ const chat = createSlice({
       state.receiverName = action.payload.receiver_name;
       state.receiverId=action.payload.receiverId
     },
+    setActiveUsers(state,action){
+      state.activeUsers=action.payload.users
+    }
   },
 });
 

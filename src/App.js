@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import SignUp from './components/Signup'
 import { Navigate } from "react-router-dom";
 import ChatContainer from "./components/Chat/ChatContainer";
+import RootChat from "./Pages/RootChat";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +36,12 @@ const router = createBrowserRouter([
       },
       {
         path:'/chat',
-        element:<ChatContainer></ChatContainer>
+        element:<RootChat></RootChat>,
+        children:[{
+          path:'',
+          element:<ChatContainer></ChatContainer>
+
+        }]
       }
    
     ],
