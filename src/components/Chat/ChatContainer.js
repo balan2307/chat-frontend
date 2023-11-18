@@ -62,7 +62,7 @@ function ChatContainer() {
       
       socket?.disconnect();
     };
-  }, [])
+  }, [socket])
 
 
   console.log("active users ",activeUsers)
