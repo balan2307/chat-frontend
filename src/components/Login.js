@@ -24,7 +24,7 @@ function Login() {
       password,
     };
     try {
-      let response = await fetch("${process.env.REACT_APP_BASE_URL}/auth/login", {
+      let response = await fetch(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
         method: "post",
         body: JSON.stringify({ data }),
         headers: {
