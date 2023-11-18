@@ -23,7 +23,7 @@ function Signup() {
    
     try {
 
-      let response = await fetch("http://localhost:3000/auth/register", {
+      let response = await fetch("${process.env.REACT_APP_BASE_URL}/auth/register", {
         method: "post",
         body: JSON.stringify({data }),
         headers:{

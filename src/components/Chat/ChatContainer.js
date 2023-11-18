@@ -28,6 +28,45 @@ function ChatContainer() {
     scrollToBottom();
   }, [chats]);
 
+
+  
+  useEffect(() => {
+    const connectSocket = () => {
+
+      console.log("connect")
+    
+      if (!socket?.connected && !socket?.connecting) {
+       
+        console.log("re connect")
+        socket?.connect();
+        
+        socket?.emit('addUser', user.user_detail.id, (response) => {
+          if (response.error) {
+            console.error('Error emitting "addUser" event:', response.error);
+          }
+        });
+
+        const receivers = chat.receiverId;
+        if (receivers != null && receivers.length >= 2) {
+          socket.emit("joinroom", { room: chat.chatId, user: user.user_detail.id });
+        }
+      }
+    };
+
+   
+    const intervalId = setInterval(connectSocket, 5000);
+
+ 
+    return () => {
+      clearInterval(intervalId);
+      
+      socket?.disconnect();
+    };
+  }, [socket])
+
+
+  console.log("active users ",activeUsers)
+
   const scrollToBottom = () => {
     const container = chatContainerRef.current;
 
@@ -37,7 +76,7 @@ function ChatContainer() {
   };
 
   useEffect(() => {
-    setSocket(io.connect("http://localhost:3000"));
+    setSocket(io.connect(`${process.env.REACT_APP_BASE_URL}`));
   }, []);
 
   useEffect(() => {
@@ -96,7 +135,7 @@ function ChatContainer() {
 
   async function fetchMessages(chatId) {
     const response = await fetch(
-      `http://localhost:3000/message/${chat.chatId}`
+      `${process.env.REACT_APP_BASE_URL}/message/${chat.chatId}`
     );
 
     const data = await response.json();
@@ -119,7 +158,7 @@ function ChatContainer() {
 
     socket?.emit("sendMessage", { message: Newmessage });
 
-    const resp = await fetch(`http://localhost:3000/message/`, {
+    const resp = await fetch(`${process.env.REACT_APP_BASE_URL}/message/`, {
       method: "POST",
       body: JSON.stringify(Newmessage),
       headers: {

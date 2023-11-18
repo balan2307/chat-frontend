@@ -24,7 +24,7 @@ function Login() {
       password,
     };
     try {
-      let response = await fetch("http://localhost:3000/auth/login", {
+      let response = await fetch("/auth/login", {
         method: "post",
         body: JSON.stringify({ data }),
         headers: {

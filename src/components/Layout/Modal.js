@@ -15,7 +15,7 @@ function Modal({ onClose, isOpen }) {
   const [groupName, setGroupName] = useState("");
 
   async function createGroupChat() {
-    const response = await fetch(`http://localhost:3000/chats/groupchat`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/chats/groupchat`, {
       method: "POST",
       body: JSON.stringify({ users: groupMembers ,chatName:groupName ,groupAdmin:loggedInUser.id}),
       headers: {

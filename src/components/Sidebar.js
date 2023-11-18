@@ -24,7 +24,7 @@ function SideBar() {
 
     if(user=="") return
     console.log("User ",user)
-    const data=await fetch(`http://localhost:3000/auth/searchusers?search=${user}&userId=${userId}`);
+    const data=await fetch(`${process.env.REACT_APP_BASE_URL}/auth/searchusers?search=${user}&userId=${userId}`);
     const users=await data.json();
     setUsers(users)
 
