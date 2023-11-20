@@ -41,7 +41,7 @@ function Modal({ onClose, isOpen }) {
     if (user == "") return;
 
     const data = await fetch(
-      `http://localhost:3000/auth/searchusers?search=${user}&userId=${null}`
+      `${env.REACT_APP_BASE_URL}/auth/searchusers?search=${user}&userId=${null}`
     );
     const users = await data.json();
 

@@ -10,20 +10,20 @@ function AllChats({ activeUsers }) {
   const user = useSelector((state) => state.app);
   const chatContainerRef = useRef(null);
 
-  console.log("active users ", activeUsers);
+  // console.log("active users ", activeUsers);
 
   const dispatch = useDispatch();
 
   const fetchChats = async function () {
 
     if(!navigator.onLine) return;
-    console.log("check ",navigator.onLine)
+    // console.log("check ",navigator.onLine)
     const response = await fetch(
       `${process.env.REACT_APP_BASE_URL}/chats/${user.user_detail.id}`
     );
     let allchats = await response.json();
 
-    console.log("allchats ", allchats);
+    // console.log("allchats ", allchats);
     // allchats = allchats.filter((chat) => chat._id != user.user_detail.id);
 
     let newChats = allchats.map((chat) => {
