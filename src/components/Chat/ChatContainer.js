@@ -12,7 +12,6 @@ import { io } from "socket.io-client";
 import { useCallback } from "react";
 import { useRef } from "react";
 
-
 function ChatContainer() {
   console.log("chat container");
 
@@ -23,49 +22,13 @@ function ChatContainer() {
   const [socket, setSocket] = useState(null);
   const chatContainerRef = useRef(null);
   const [activeUsers, setActiveUsers] = useState([]);
+  const [reconnect, setReconnect] = useState(false);
 
   useEffect(() => {
     scrollToBottom();
   }, [chats]);
 
-
-  
-  useEffect(() => {
-    const connectSocket = () => {
-
-      console.log("connect")
-    
-      if (!socket?.connected && !socket?.connecting) {
-       
-        console.log("re connect")
-        socket?.connect();
-        
-        socket?.emit('addUser', user.user_detail.id, (response) => {
-          if (response.error) {
-            console.error('Error emitting "addUser" event:', response.error);
-          }
-        });
-
-        const receivers = chat.receiverId;
-        if (receivers != null && receivers.length >= 2) {
-          socket.emit("joinroom", { room: chat.chatId, user: user.user_detail.id });
-        }
-      }
-    };
-
-   
-    const intervalId = setInterval(connectSocket, 5000);
-
- 
-    return () => {
-      clearInterval(intervalId);
-      
-      socket?.disconnect();
-    };
-  }, [socket])
-
-
-  console.log("active users ",activeUsers)
+  console.log("active users ", activeUsers);
 
   const scrollToBottom = () => {
     const container = chatContainerRef.current;
@@ -76,7 +39,14 @@ function ChatContainer() {
   };
 
   useEffect(() => {
-    setSocket(io.connect(`${process.env.REACT_APP_BASE_URL}`));
+    setSocket(
+      io.connect(`${process.env.REACT_APP_BASE_URL}`, {
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: Infinity,
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -84,7 +54,10 @@ function ChatContainer() {
 
     const receivers = chat.receiverId;
     if (receivers != null && receivers.length >= 2) {
-      socket.emit("joinroom", { room: chat.chatId, user: user.user_detail.id });
+      socket?.emit("joinroom", {
+        room: chat.chatId,
+        user: user.user_detail.id,
+      });
     }
   }, [chat.chatId]);
 
@@ -112,20 +85,54 @@ function ChatContainer() {
   );
 
   useEffect(() => {
-    socket?.emit("addUser", user.user_detail.id);
+    const handleReconnect = () => {
+      console.log("reconnect ", socket?.id);
+
+      // The socket.io library handles reconnection, so we don't manually call connect
+      // You can add your logic here if needed
+      console.log("re connect");
+      const updatedSocketId = socket?.id; // Capture the updated socket ID
+      socket?.emit(
+        "addUser",
+        { userId: user.user_detail.id, sockedId: updatedSocketId },
+        (response) => {
+          if (response.error) {
+            console.error('Error emitting "addUser" event:', response.error);
+          }
+        }
+      );
+    };
+
+    // socket?.emit("addUser", user.user_detail.id);
 
     socket?.on("getUsers", (users) => {
-      // console.log("Users ", users);
       setActiveUsers(users);
     });
 
     socket?.on("receivegroupChat", handleMessage);
 
+    // socket?.on("reconnect",handleReconnect)
+
     socket?.on("getMessage", handleMessage);
+
+    socket?.on("connect", () => {
+      console.log("Successfully reconnected! ", socket.id);
+      handleReconnect(); // Now it should have the updated socket.id
+    });
+
+    socket?.on("reconnect", (data) => {
+      console.log("RECONNECT attempt ", socket, socket?.io?.id);
+
+      // handleReconnect()
+      // setReconnect(true)
+    });
+
     return () => {
-      // console.log("off")
+      console.log("off");
       socket?.off("getMessage", handleMessage);
       socket?.off("receivegroupChat", handleMessage);
+      socket?.off("reconnect", handleReconnect);
+      socket?.off("getUsers", handleReconnect);
     };
   }, [socket, handleMessage]);
 
