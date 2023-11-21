@@ -139,8 +139,8 @@ function ChatContainer() {
       handleReconnect(); // Now it should have the updated socket.id
     });
 
-    socket?.on("reconnect", (data) => {
-      console.log("RECONNECT attempt ", socket, socket?.io?.id);
+    socket?.io.on("reconnect_attempt", (data) => {
+      console.log("RECONNECT attempt ",);
 
       // handleReconnect()
       // setReconnect(true)
@@ -152,8 +152,9 @@ function ChatContainer() {
       socket?.off("receivegroupChat", handleMessage);
       socket?.off("reconnect", handleReconnect);
       socket?.off("getUsers", handleReconnect);
+      socket?.disconnect();
     };
-  }, [socket, handleMessage]);
+  }, [socket, handleMessage ,chat,user.user_detail.id]);
 
   useEffect(() => {
     if (chat.chatId != null) fetchMessages(chat.chatId);
