@@ -184,6 +184,8 @@ function ChatContainer() {
 
     socket?.emit("sendMessage", { message: Newmessage });
 
+    setMessage("");
+
     const resp = await fetch(`${process.env.REACT_APP_BASE_URL}/message/`, {
       method: "POST",
       body: JSON.stringify(Newmessage),
@@ -192,7 +194,7 @@ function ChatContainer() {
       },
     });
 
-    setMessage("");
+    
   }
 
   return (
