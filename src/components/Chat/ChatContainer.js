@@ -152,7 +152,7 @@ function ChatContainer() {
       socket?.off("receivegroupChat", handleMessage);
       socket?.off("reconnect", handleReconnect);
       socket?.off("getUsers", handleReconnect);
-      socket?.disconnect();
+      
     };
   }, [socket, handleMessage ,chat,user.user_detail.id]);
 
