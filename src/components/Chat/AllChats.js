@@ -46,6 +46,8 @@ function AllChats({ activeUsers }) {
   }, [activeUsers]);
 
   function showChat(chat) {
+
+    console.log("show chat ",chat)
     if (chat.isGroupChat) {
       dispatch(
         chatActions.setCurrentChat({

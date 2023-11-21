@@ -52,8 +52,13 @@ function ChatContainer() {
   useEffect(() => {
     // console.log("receivers ",chat.receiverId)
 
+   
+
     const receivers = chat.receiverId;
-    if (receivers != null && receivers.length >= 2) {
+    if (receivers != null && receivers.length > 2) {
+
+      console.log("join group chat")
+
       socket?.emit("joinroom", {
         room: chat.chatId,
         user: user.user_detail.id,
@@ -64,9 +69,11 @@ function ChatContainer() {
   const handleMessage = useCallback(
     (message) => {
       console.log("handle message ", chat.chatId);
+      console.log("---CHECK---");
+
 
       if (
-        message.chatId == "new" &&
+        (message.chatId == "new" || chat.chatId=="new") &&
         (message.sender._id == user.user_detail.id ||
           message.sender._id == chat.receiverId)
       ) {
@@ -101,6 +108,18 @@ function ChatContainer() {
           }
         }
       );
+
+      
+    const receivers = chat.receiverId;
+    if (receivers != null && receivers.length > 2) {
+
+      console.log("join group chat")
+
+      socket?.emit("joinroom", {
+        room: chat.chatId,
+        user: user.user_detail.id,
+      });
+    }
     };
 
     // socket?.emit("addUser", user.user_detail.id);
